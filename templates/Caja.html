@@ -1,0 +1,579 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pestaña de Caja - Corte Diario</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6F" crossorigin="anonymous">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url("static/Dark Green and White Modern Minimalist Nature Presentation.jpg") center/cover no-repeat;
+      color: #fff;
+    }
+
+    .icon-btn {
+      background: rgba(141, 170, 0, 0.85);
+      border: none;
+      border-radius: 50%;
+      padding: 12px;
+      margin: 12px 0;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 18px;
+    }
+
+    .icon-btn:hover {
+      transform: scale(1.15);
+      background: #a4cf58;
+    }
+
+    .main-panel {
+      margin-left: 120px;
+      padding: 20px;
+      background: rgba(0, 0, 0, 0.6);
+      border-radius: 12px;
+      max-width: 100%;
+      margin-top: 25px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 10px;
+      align-items: end;
+    }
+
+    label {
+      font-size: 13px;
+    }
+
+    input,
+    select,
+    button,
+    textarea {
+      font-size: 14px;
+      padding: 8px;
+      border-radius: 8px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    input::placeholder {
+      color: #ccc;
+    }
+
+    select option {
+      color: #000;
+    }
+
+    .grid-col-3 {
+      grid-column: span 3;
+    }
+
+    .grid-col-4 {
+      grid-column: span 4;
+    }
+
+    .grid-col-6 {
+      grid-column: span 6;
+    }
+
+    .grid-col-12 {
+      grid-column: span 12;
+    }
+
+    table {
+      width: 50%;
+      border-collapse: collapse;
+      margin-top: 15px;
+
+    }
+
+    th,
+    td {
+      padding: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      text-align: left;
+    }
+
+    th {
+      background: rgba(255, 255, 255, 0.2);
+      font-weight: 600;
+      border-radius: 8px;
+    }
+
+    .totals {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    .tile {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 12px;
+      border-radius: 10px;
+      min-width: 150px;
+      text-align: center;
+    }
+
+    .positive {
+      color: #9cff9c;
+      font-weight: 700;
+    }
+
+    .negative {
+      color: #ff9c9c;
+      font-weight: 700;
+    }
+
+    .actions button {
+      background: #4caf50;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      transition: 0.2s;
+    }
+
+    .actions button:hover {
+      background: #45a049;
+    }
+
+    @media (max-width: 720px) {
+      form {
+        grid-template-columns: repeat(6, 1fr)
+      }
+
+      .grid-col-3,
+      .grid-col-4,
+      .grid-col-6 {
+        grid-column: span 6
+      }
+    }
+
+    .Botones-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100px;
+      background-color: rgba(141, 170, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      padding: 15px 0;
+      justify-content: center;
+      align-items: center;
+      margin: 0;
+    }
+
+    .Botones {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.69);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-size: 18px;
+      cursor: pointer;
+      transition: transform 0.2s, background-color 0.2s;
+      text-decoration: none;
+      gap: 10px;
+    }
+
+    .Botones img {
+      width: 45px;
+      height: 45px;
+    }
+
+    .Botones:hover {
+      transform: scale(1.1);
+      background-color: rgba(122, 149, 0, 0.85);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3">
+        <div class="Botones-container">
+          <a href="{{ url_for('principal') }}" class="Botones">
+            <img src="{{ url_for('static', filename='Principal.png') }}" alt="Ventas">
+          </a>
+          {% if current_user.rol == 'ADMIN' or session['acceso_ventas'] == 'S' %}
+          <a href="{{ url_for('ventas') }}" class="Botones">
+            <img src="{{ url_for('static', filename='venta.png') }}" alt="Ventas">
+          </a>
+          {% endif %}
+          {% if current_user.rol == 'ADMIN' or session['acceso_caja'] == 'S' %}
+          <a href="/caja" class="Botones">
+            <img src="{{ url_for('static', filename='caja.png') }}" alt="Caja">
+          </a>
+          {% endif %}
+          {% if current_user.rol == 'ADMIN' or session['acceso_inventario'] == 'S' %}
+          <a href="/inventario" class="Botones">
+            <img src="{{ url_for('static', filename='inventario.png') }}" alt="Inventario">
+          </a>
+          {% endif %}
+          <a href="/logout" class="Botones">
+            <img src="{{ url_for('static', filename='logout.png') }}" alt="Logout">
+          </a>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-panel">
+    <h1>Frutería “El Divino Niño” - Caja Diario</h1>
+
+    <form id="entryForm" onsubmit="return false;">
+      <div class="grid-col-3">
+        <label for="tipo">Tipo</label>
+        <select id="tipo">
+          <option value="gasto">Gasto</option>
+        </select>
+      </div>
+      <div class="grid-col-3">
+        <label for="monto">Monto (MXN)</label>
+        <input id="monto" type="number" step="0.50" min="1" max="3000" maxlength="4" placeholder="Ej: 1500.50" />
+      </div>
+      <div class="grid-col-6">
+        <label for="desc">Descripción</label>
+        <input id="desc" type="text" maxlength="20" pattern="[a-zA-Z ]+"
+          placeholder="Ej: Venta mostrador, Compra de insumos..." />
+      </div>
+      <div class="grid-col-3">
+        <label for="fecha">Fecha</label>
+        <input id="fecha" type="date" />
+      </div>
+      <div class="grid-col-3">
+        <label for="hora">Hora</label>
+        <input id="hora" type="time" />
+      </div>
+      <div class="grid-col-6 actions">
+        <button onclick="addEntryGastos()">Agregar gasto</button> <br><br>
+        <button onclick="aplicarFiltro()">Filtrar</button>
+        <button onclick="clearForm()" type="button">Limpiar</button>
+      </div>
+    </form>
+
+    <div style="display:flex;gap:8px;margin-top:14px;align-items:center">
+      <div>
+        <label for="corteFecha">Corte - Fecha</label>
+        <input id="corteFecha" type="date" />
+      </div>
+      <div>
+        <label for="corteHora">Hora hasta</label>
+        <input id="corteHora" type="time" />
+      </div>
+    </div>
+
+    <div class="totals" id="snapshot"></div>
+    <div style="display: flex; gap: 20px; margin-top: 20px;">
+    
+    <!-- Ventas -->
+    <div style="flex: 1; min-width: 0;">
+        <h1>Ventas</h1>
+        <div style="overflow-y: scroll; max-height: 400px;">
+            <table id="tabla" class="table table-dark table-hover" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tipo</th>
+                        <th>Monto</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        {% if current_user.rol == 'ADMIN' %}
+                        <th>Eliminar</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Gastos -->
+    <div style="flex: 1; min-width: 0;">
+        <h1>Gastos</h1>
+        <div style="overflow-y: scroll; max-height: 400px;">
+            <table id="tablaGastos" class="table table-dark table-hover" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Tipo</th>
+                        <th>Monto</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        {% if current_user.rol == 'ADMIN' %}
+                        <th>Eliminar</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.dataTables.min.css">
+    <script src="https://cdn.datatables.net/2.0.8/js/dataTables.min.js"></script>
+
+    <script>
+      $(document).ready(function () {
+        $('#ventas_tabla').DataTable();
+      });
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        await cargarDatos();
+      });
+
+      // Variables globales
+      let ventasGlobal = [];
+      let gastosGlobal = [];
+
+      // -------------------- CARGAR DATOS --------------------
+      async function cargarDatos() {
+        try {
+          const [resVentas, resGastos] = await Promise.all([
+            fetch('/api/ventas_caja'),
+            fetch('/api/ventas_caja/gastos')
+          ]);
+
+          ventasGlobal = await resVentas.json();
+          gastosGlobal = await resGastos.json();
+
+          renderTableVentas(ventasGlobal);
+          renderTableGastos(gastosGlobal);
+          actualizarSnapshot();
+
+        } catch (e) {
+          console.error("Error al cargar datos:", e);
+        }
+      }
+
+      // -------------------- SNAPSHOT TOTAL --------------------
+      function actualizarSnapshot() {
+        const ventasTotal = ventasGlobal.reduce((a, b) => a + parseFloat(b.monto), 0);
+        const gastosTotal = gastosGlobal.reduce((a, b) => a + parseFloat(b.monto), 0);
+        const saldo = ventasTotal - gastosTotal;
+
+        const container = document.getElementById('snapshot');
+        container.innerHTML = `
+    <div class="tile">
+      <div>Total ventas</div>
+      <div class="positive">$ ${ventasTotal.toFixed(2)}</div>
+    </div>
+    <div class="tile">
+      <div>Total gastos</div>
+      <div class="negative">$ ${gastosTotal.toFixed(2)}</div>
+    </div>
+    <div class="tile">
+      <div>Saldo</div>
+      <div style="font-weight:800">$ ${saldo.toFixed(2)}</div>
+    </div>
+  `;
+      }
+
+      // -------------------- FECHA Y HORA --------------------
+      const tipoEl = document.getElementById('tipo');
+      const montoEl = document.getElementById('monto');
+      const descEl = document.getElementById('desc');
+      const fechaEl = document.getElementById('fecha');
+      const horaEl = document.getElementById('hora');
+
+      function nowDateString() { const d = new Date(); return d.toISOString().slice(0, 10); }
+      function nowTimeString() { const d = new Date(); return d.toTimeString().slice(0, 5); }
+
+      document.getElementById('fecha').value = nowDateString();
+      document.getElementById('hora').value = "00:00";
+      document.getElementById('corteFecha').value = nowDateString();
+      document.getElementById('corteHora').value = "23:59";
+
+      function clearForm() {
+        montoEl.value = '';
+        descEl.value = '';
+        fechaEl.value = nowDateString();
+        horaEl.value = "00:00";
+        cargarDatos()
+      }
+
+      // -------------------- AGREGAR GASTO --------------------
+      async function addEntryGastos() {
+        const tipo = tipoEl.value;
+        const monto = parseFloat(montoEl.value || 0);
+        const desc = descEl.value;
+        const fecha = fechaEl.value || nowDateString();
+        const hora = horaEl.value || nowTimeString();
+
+        if (!monto || monto <= 0) {
+          alert('Ingresa un monto válido');
+          return;
+        }
+        if (!fecha) {
+          alert('Selecciona una fecha válida');
+          return;
+        }
+        if (!hora) {
+          alert('Selecciona una hora válida');
+          return;
+        }
+        if (desc && !/^[a-zA-Z ]+$/.test(desc)) {
+          alert('La descripción solo debe contener letras y espacios');
+          return;
+        }
+        if (desc && desc.length > 20) {
+          alert('La descripción no debe exceder los 20 caracteres');
+          return;
+        }
+        if (monto > 3000) {
+          alert('El monto máximo permitido es de $3000 MXN');
+          return;
+        }
+        if (monto < 1) {
+          alert('El monto mínimo permitido es de $1 MXN');
+          return;
+        }
+
+        const nuevoRegistro = { tipo, monto, descripcion: desc, fecha, hora };
+
+        try {
+          const res = await fetch('/api/ventas_caja/AgregarGasto', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(nuevoRegistro)
+          });
+
+          if (!res.ok) throw new Error('Error de conexión con la base de datos');
+          alert('Se ha registrado el gasto exitosamente');
+          await cargarDatos();
+          clearForm();
+        } catch (e) {
+          console.error('Error al agregar registro:', e);
+          alert('Error al agregar el registro, porfavor llene todos los campos correctamente.');
+        }
+      }
+
+      // -------------------- RENDER TABLAS --------------------
+      function renderTableVentas(entries) {
+        const tbody = document.querySelector('#tabla tbody');
+        tbody.innerHTML = '';
+        entries.sort((a, b) => (a.fecha + a.hora) < (b.fecha + b.hora) ? 1 : -1);
+        entries.forEach((e, i) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td>${e.tipo}</td>
+      <td>${parseFloat(e.monto).toFixed(2)}</td>
+      <td>${e.descripcion || ''}</td>
+      <td>${e.fecha}</td>
+      <td>${e.hora}</td>
+      {% if current_user.rol == 'ADMIN' %}
+      <td><button onclick="eliminarRegistro('${e.id}')"><i class='fa fa-trash'></i></button></td>
+      {% endif %}
+    `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function renderTableGastos(entries) {
+        const tbody = document.querySelector('#tablaGastos tbody');
+        tbody.innerHTML = '';
+        entries.sort((a, b) => (a.fecha + a.hora) < (b.fecha + b.hora) ? 1 : -1);
+        entries.forEach((e, i) => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td>${e.tipo}</td>
+      <td>${parseFloat(e.monto).toFixed(2)}</td>
+      <td>${e.descripcion || ''}</td>
+      <td>${e.fecha}</td>
+      <td>${e.hora}</td>
+      {% if current_user.rol == 'ADMIN' %}
+      <td><button onclick="eliminarRegistroGasto('${e.id}')"><i class='fa fa-trash'></i></button></td>
+      {% endif %}
+    `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      // -------------------- ELIMINAR --------------------
+      async function eliminarRegistro(id) {
+        if (!confirm('¿Estás seguro de eliminar este registro de venta?')) return;
+        try {
+          const res = await fetch(`/api/ventas_caja/Eliminar/${id}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error('Error al eliminar en la base de datos');
+          await cargarDatos();
+        } catch (e) {
+          console.error('Error al eliminar registro:', e);
+        }
+      }
+
+
+      async function eliminarRegistroGasto(id) {
+        if (!confirm('¿Estás seguro de eliminar este registro de gasto?')) return;
+        try {
+          const res = await fetch(`/api/ventas_caja_gasto/Eliminar/${id}`, { method: 'DELETE' });
+          if (!res.ok) throw new Error('Error al eliminar en la base de datos');
+          await cargarDatos();
+        } catch (e) {
+          console.error('Error al eliminar registro:', e);
+        }
+      }
+      // -------------------- FILTRO --------------------
+      async function aplicarFiltro() {
+        const fechaInicio = document.getElementById('fecha').value;
+        const horaInicio = document.getElementById('hora').value;
+        const fechaFin = document.getElementById('corteFecha').value;
+        const horaFin = document.getElementById('corteHora').value;
+
+        if (!fechaInicio || !horaInicio || !fechaFin || !horaFin) {
+          alert('Por favor selecciona todas las fechas y horas del filtro.');
+          return;
+        }
+
+        try {
+          const url = `/api/filtro_ventas_caja?fecha_inicio=${fechaInicio}&hora_inicio=${horaInicio}&fecha_fin=${fechaFin}&hora_fin=${horaFin}`;
+          const res = await fetch(url);
+          const datosFiltrados = await res.json();
+          renderTableVentas(datosFiltrados);
+          const urlGastos = `/api/filtro_gastos_caja?fecha_inicio=${fechaInicio}&hora_inicio=${horaInicio}&fecha_fin=${fechaFin}&hora_fin=${horaFin}`;
+          const resGastos = await fetch(urlGastos);
+          const datosGastos = await resGastos.json();
+
+          renderTableGastos(datosGastos);
+          actualizarSnapshot();
+        } catch (e) {
+          console.error('Error al aplicar filtro:', e);
+        }
+      }
+    </script>
+
+</body>
+
+</html>

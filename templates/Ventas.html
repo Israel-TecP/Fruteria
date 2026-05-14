@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Ventas</title>
+</head>
+
+<body>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        /* Fondo con imagen */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("static/Dark Green and White Modern Minimalist Nature Presentation.jpg") center/cover no-repeat;
+            z-index: -1;
+        }
+
+        body {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .Ventas-container {
+            background-color: rgba(88, 83, 89, 0.85);
+            color: white;
+            /* por esto no quedaba era 100 */
+            width: 140%;
+            padding: 10px 60px;
+            margin-top: 25px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: left;
+            /* para moverlo */
+            margin-left: -15%;
+        }
+
+        .Ventas-container h1 {
+            color: white;
+            font-size: 45px;
+            font-family: "DM Serif Display", serif;
+
+        }
+
+        thead {
+            background-color: gray;
+            color: white;
+            border-radius: 50%;
+        }
+
+        .Botones-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100px;
+            background-color: rgba(141, 170, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding: 15px 0;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .Botones-container:hover {
+            width: 300px;
+            transition: width 0.5s;
+        }
+
+        .Botones-container:hover .Botones {
+            width: 250px;
+            border-radius: 0%;
+            transition: border-radius 0.5s;
+        }
+
+        .Botones-container:hover .Botones img {
+            position: fixed;
+            margin-right: 150px;
+            transition: margin-right 0.3s;
+        }
+
+        .Botones-container:hover .Botones_texto {
+            position: relative;
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        .Botones {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.695);
+            display: flex;
+            flex-direction: center;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            text-decoration: none;
+            gap: 10px;
+            
+        }
+
+        .Botones img {
+            width: 45px;
+            height: 45px;
+
+        }
+
+        .Botones:hover img {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            flex-direction: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .Botones_texto {
+            background-color: rgba(0, 0, 0, 0);
+            color: black;
+            border-radius: 10px;
+            visibility: hidden;
+            text-align: center;
+            padding: 5px;
+            position: fixed;
+            margin-left: 20%;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .Formulario-container {
+            background-color: rgba(141, 170, 0, 0.85);
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-right: -15px;
+            margin-left: auto;
+            margin-top: 25px;
+            float: right;
+        }
+
+        .Formulario-container h2 {
+            color: white;
+            font-size: 40px;
+            font-family: "DM Serif Display", serif;
+            text-align: center;
+        }
+
+        .checkbox-wrapper-19 {
+            align-items: center;
+            box-sizing: border-box;
+            --background-color: #fff;
+            --checkbox-height: 25px;
+        }
+
+        @-moz-keyframes dothabottomcheck-19 {
+            0% {
+                height: 0;
+            }
+
+            100% {
+                height: calc(var(--checkbox-height) / 2);
+            }
+        }
+
+        @-webkit-keyframes dothabottomcheck-19 {
+            0% {
+                height: 0;
+            }
+
+            100% {
+                height: calc(var(--checkbox-height) / 2);
+            }
+        }
+
+        @keyframes dothabottomcheck-19 {
+            0% {
+                height: 0;
+            }
+
+            100% {
+                height: calc(var(--checkbox-height) / 2);
+            }
+        }
+
+        @keyframes dothatopcheck-19 {
+            0% {
+                height: 0;
+            }
+
+            50% {
+                height: 0;
+            }
+
+            100% {
+                height: calc(var(--checkbox-height) * 1.2);
+            }
+        }
+
+        @-webkit-keyframes dothatopcheck-19 {
+            0% {
+                height: 0;
+            }
+
+            50% {
+                height: 0;
+            }
+
+            100% {
+                height: calc(var(--checkbox-height) * 1.2);
+            }
+        }
+
+        @-moz-keyframes dothatopcheck-19 {
+            0% {
+                height: 0;
+            }
+
+            50% {
+                height: 0;
+            }
+
+            100% {
+                height: calc(var(--checkbox-height) * 1.2);
+            }
+        }
+
+        .checkbox-wrapper-19 input[type=checkbox] {
+            display: none;
+        }
+
+        .checkbox-wrapper-19 .check-box {
+            height: var(--checkbox-height);
+            width: var(--checkbox-height);
+            background-color: transparent;
+            border: calc(var(--checkbox-height) * .1) solid #000;
+            border-radius: 5px;
+            position: relative;
+            display: inline-block;
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            -moz-transition: border-color ease 0.2s;
+            -o-transition: border-color ease 0.2s;
+            -webkit-transition: border-color ease 0.2s;
+            transition: border-color ease 0.2s;
+            cursor: pointer;
+        }
+
+        .checkbox-wrapper-19 .check-box::before,
+        .checkbox-wrapper-19 .check-box::after {
+            -moz-box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            box-sizing: border-box;
+            position: absolute;
+            height: 0;
+            width: calc(var(--checkbox-height) * .2);
+            background-color: #34b93d;
+            display: inline-block;
+            -moz-transform-origin: left top;
+            -ms-transform-origin: left top;
+            -o-transform-origin: left top;
+            -webkit-transform-origin: left top;
+            transform-origin: left top;
+            border-radius: 5px;
+            content: " ";
+            -webkit-transition: opacity ease 0.5;
+            -moz-transition: opacity ease 0.5;
+            transition: opacity ease 0.5;
+        }
+
+        .checkbox-wrapper-19 .check-box::before {
+            top: calc(var(--checkbox-height) * .72);
+            left: calc(var(--checkbox-height) * .41);
+            box-shadow: 0 0 0 calc(var(--checkbox-height) * .05) var(--background-color);
+            -moz-transform: rotate(-135deg);
+            -ms-transform: rotate(-135deg);
+            -o-transform: rotate(-135deg);
+            -webkit-transform: rotate(-135deg);
+            transform: rotate(-135deg);
+        }
+
+        .checkbox-wrapper-19 .check-box::after {
+            top: calc(var(--checkbox-height) * .37);
+            left: calc(var(--checkbox-height) * .05);
+            -moz-transform: rotate(-45deg);
+            -ms-transform: rotate(-45deg);
+            -o-transform: rotate(-45deg);
+            -webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        }
+
+        .checkbox-wrapper-19 input[type=checkbox]:checked+.check-box,
+        .checkbox-wrapper-19 .check-box.checked {
+            border-color: #34b93d;
+        }
+
+        .checkbox-wrapper-19 input[type=checkbox]:checked+.check-box::after,
+        .checkbox-wrapper-19 .check-box.checked::after {
+            height: calc(var(--checkbox-height) / 2);
+            -moz-animation: dothabottomcheck-19 0.2s ease 0s forwards;
+            -o-animation: dothabottomcheck-19 0.2s ease 0s forwards;
+            -webkit-animation: dothabottomcheck-19 0.2s ease 0s forwards;
+            animation: dothabottomcheck-19 0.2s ease 0s forwards;
+        }
+
+        .checkbox-wrapper-19 input[type=checkbox]:checked+.check-box::before,
+        .checkbox-wrapper-19 .check-box.checked::before {
+            height: calc(var(--checkbox-height) * 1.2);
+            -moz-animation: dothatopcheck-19 0.4s ease 0s forwards;
+            -o-animation: dothatopcheck-19 0.4s ease 0s forwards;
+            -webkit-animation: dothatopcheck-19 0.4s ease 0s forwards;
+            animation: dothatopcheck-19 0.4s ease 0s forwards;
+        }
+    </style>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashed-messages">
+        {% for category, message in messages %}
+        <div class="alert bg-{{ category }} mt-md-3 text-center">
+            <li>{{ message }}</li>
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="Botones-container">
+                    <a href="{{ url_for('principal') }}" class="Botones">
+                        <img src="{{ url_for('static', filename='Principal.png') }}" alt="Ventas">
+                        <div class="Botones_texto">Menu principal</div>
+                    </a>
+
+                    {% if current_user.rol == 'ADMIN' or session['acceso_ventas'] == 'S' %}
+                    <a href="{{ url_for('ventas') }}" class="Botones">
+
+                        <img src="{{ url_for('static', filename='venta.png') }}" alt="Ventas">
+                        <div class="Botones_texto">Ventas</div>
+                    </a>
+
+                    {% endif %}
+                    {% if current_user.rol == 'ADMIN' or session['acceso_caja'] == 'S' %}
+                    <a href="/caja" class="Botones">
+                        <img src="{{ url_for('static', filename='caja.png') }}" alt="Caja">
+                        <div class="Botones_texto">Caja</div>
+                    </a>
+
+                    {% endif %}
+                    {% if current_user.rol == 'ADMIN' or session['acceso_inventario'] == 'S' %}
+                    <a href="/inventario" class="Botones">
+                        <img src="{{ url_for('static', filename='inventario.png') }}" alt="Inventario">
+                        <div class="Botones_texto">Inventario</div>
+                    </a>
+
+                    {% endif %}
+                    <a href="/logout" class="Botones">
+                        <img src="{{ url_for('static', filename='logout.png') }}" alt="Logout">
+                        <div class="Botones_texto">Cerrar sesión</div>
+                    </a>
+
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="Ventas-container">
+                    <h1>Fruteria "El divino niño"</h1>
+                    <table class="table-success table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Código</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in carrito %}
+                            <tr>
+                                <td>{{ item.nombre }}</td>
+                                <td>{{ item.categoria }}</td>
+                                <td>{{ item.precio }}</td>
+                                <td>{{ item.cantidad }}</td>
+                                <td>{{ item.codigo }}</td>
+                                <td>
+                                    <form action="{{ url_for('carrito_eliminar', codigo=item.codigo) }}" method="POST"
+                                        style="display:inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+
+                    <div class="d-flex justify-content-start mt-3">
+                        {% if carrito != [] %}
+                        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalVenta">
+                            Realizar venta
+                        </button>
+
+                        <div class="modal fade" id="modalVenta" tabindex="-1" aria-labelledby="modalVentaLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+
+                                    <div class="modal-header">
+                                        <img src="{{ url_for('static', filename='venta.png') }}" alt="Ventas" width="40" height="40"
+                                            style="margin-right: 10px;">
+                                        <h5 class="modal-title" id="modalVentaLabel" style="color: black;">Confirmar
+                                            venta</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+
+                                    <div class="modal-body">
+
+                                        <!-- Tabla de productos -->
+                                        <table class="table table-bordered">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Producto</th>
+                                                    <th>Categoria</th>
+                                                    <th>Precio</th>
+                                                    <th>Cantidad</th>
+                                                    <th>Codigo</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tablaVentaBody">
+                                                {% for item in carrito %}
+                                                <tr>
+                                                    <td>{{ item.nombre }}</td>
+                                                    <td>{{ item.categoria }}</td>
+                                                    <td>{{ item.precio }}</td>
+                                                    <td>{{ item.cantidad }}</td>
+                                                    <td>{{ item.codigo }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label" style="color: black;">Total</label>
+                                                <input type="text" id="totalVenta" class="form-control" readonly>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label" style="color: black;">Método de pago</label>
+                                                <select id="metodoPago" class="form-select">
+                                                    <option value="" selected disabled>Seleccione un método</option>
+                                                    <option value="EFECTIVO">Efectivo</option>
+                                                    <option value="TARJETA">Tarjeta</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="col-md-4">
+                                                <label class="form-label" style="color: black;">Monto pagado</label>
+                                                <input type="number" id="montoPagado" class="form-control" min="0"
+                                                    oninput="calcularCambio()">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mt-3">
+                                            <div class="col-md-4">
+                                                <label class="form-label" style="color: black;">Cambio</label>
+                                                <input type="text" id="cambio" class="form-control" readonly>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button class="btn btn-primary" onclick="confirmarVenta(event)"><a
+                                                href="/realizar_venta" style="color: white; text-decoration: none;">Confirmar venta</button>
+                                        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <a href="/vaciar_carrito" class="btn btn-danger me-2" style="margin-left: 10px;">Cancelar
+                            Venta</a>
+                        {% elif carrito == [] %}
+                        <button type="button" class="btn btn-secondary me-2" style="margin-right: 5px;"
+                            disabled>Realizar Venta</button>
+                        {% endif %}
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                            data-bs-target="#modalProductos">Ver productos</button>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="modalProductos" tabindex="-1" aria-labelledby="modalProductosLabel"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+
+                        <form action="/Buscar_Productos" method="GET" class="d-flex justify-content-center mt-3"
+                            onsubmit="event.preventDefault(); BuscarProductos();">
+                            <input type="text" id="filtroProductos" placeholder="Buscar productos"
+                                style="width: 76%; margin-right: 30px;"> <br>
+                            <button type="submit" class="btn btn-primary">Buscar</button>
+                        </form>
+
+                        <form action="/agregar_producto" method="POST">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="modalProductosLabel">Lista de productos</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Cerrar"></button>
+                            </div>
+
+                            <div class="modal-body">
+                                <table class="table table-success table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Seleccionar</th>
+                                            <th>Nombre</th>
+                                            <th>Categoría</th>
+                                            <th>Precio</th>
+                                            <th>Existencias</th>
+                                            <th>Código</th>
+                                            <th>Tipo de unidad</th>
+                                            <th>Cantidad a agregar</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaProductosBody">
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+
+                async function cargarProductos() {
+                    try {
+                        const respuesta = await fetch('/api/productos');
+                        const productos = await respuesta.json();
+
+                        const tbody = document.getElementById('tablaProductosBody');
+                        tbody.innerHTML = '';
+
+                        productos.forEach(p => {
+                            const bloqueado = p.en_uso === 'S';
+                            const fila = `
+    <tr ${bloqueado ? 'class="table-danger"' : ''}>
+      <td>
+        ${bloqueado
+                                    ? '<button disabled class="btn btn-secondary">Bloqueado</button>'
+                                    : `<div class="checkbox-wrapper-19" style="display: center;">
+                        <input type="checkbox" id="cbtest-${p.codigo}" name="productos_seleccionados" value="${p.codigo}">
+                        <label for="cbtest-${p.codigo}" class="check-box">
+                    </div>`}
+      </td>
+      <td>${p.nombre}</td>
+      <td>${p.categoria}</td>
+      <td>${p.precio}</td>
+      <td>${p.cantidad}</td>
+      <td>${p.codigo}</td>
+      <td>${p.t_unidad}</td>
+      <td>
+        <input type="number" name="cantidad_${p.codigo}" value="1" min="1" max="${p.cantidad}" required ${bloqueado ? 'disabled' : ''}>
+      </td>
+    </tr>
+  `;
+                            tbody.innerHTML += fila;
+                        });
+                    } catch (error) {
+                        console.error('Error cargando productos:', error);
+                    }
+                }
+
+
+                async function BuscarProductos() {
+                    try {
+                        const filtro = document.getElementById('filtroProductos').value;
+                        const respuesta = await fetch(`/Buscar_Productos?filtro=${encodeURIComponent(filtro)}`);
+                        const productos = await respuesta.json();
+
+                        const tbody = document.getElementById('tablaProductosBody');
+                        tbody.innerHTML = '';
+
+                        productos.forEach(p => {
+                            const bloqueado = p.en_uso === 'S';
+                            const fila = `
+    <tr ${bloqueado ? 'class="table-danger"' : ''}>
+      <td>
+        ${bloqueado
+                                    ? '<button disabled class="btn btn-secondary">Bloqueado</button>'
+                                    : `<input type="checkbox" name="productos_seleccionados" value="${p.codigo}">`}
+      </td>
+      <td>${p.nombre}</td>
+      <td>${p.categoria}</td>
+      <td>${p.precio}</td>
+      <td>${p.cantidad}</td>
+      <td>${p.codigo}</td>
+      <td>${p.t_unidad}</td>
+      <td>
+        <input type="number" name="cantidad_${p.codigo}" value="1" min="1" max="${p.cantidad}" required ${bloqueado ? 'disabled' : ''}>
+      </td>
+    </tr>
+  `;
+                            tbody.innerHTML += fila;
+                        });
+                    } catch (error) {
+                        console.error('Error cargando productos:', error);
+                    }
+                }
+
+                document.addEventListener('DOMContentLoaded', cargarProductos);
+                const modalProductos = document.getElementById('modalProductos');
+                modalProductos.addEventListener('show.bs.modal', cargarProductos);
+
+                function cargarVenta() {
+                    const tablaBody = document.getElementById("tablaVentaBody");
+                    let total = 0;
+
+                    for (let fila of tablaBody.rows) {
+                        const precio = parseFloat(fila.cells[2].textContent) || 0;
+                        const cantidad = parseInt(fila.cells[3].textContent) || 0;
+                        const subtotal = precio * cantidad;
+                        total += subtotal;
+                    }
+
+                    const totalVentaInput = document.getElementById("totalVenta");
+                    totalVentaInput.value = `$${total.toFixed(2)}`;
+                    totalVentaInput.dataset.total = total.toFixed(2);
+
+                    document.getElementById("montoPagado").value = '';
+                    document.getElementById("cambio").value = '';
+                    document.getElementById("metodoPago").value = '';
+                }
+                function calcularCambio() {
+                    const total = parseFloat(document.getElementById("totalVenta").dataset.total || 0);
+                    const pagado = parseFloat(document.getElementById("montoPagado").value || 0);
+                    const cambio = pagado - total;
+
+                    document.getElementById("cambio").value =
+                        cambio >= 0 ? `$${cambio}` : "Monto insuficiente";
+                }
+
+                function confirmarVenta(event) {
+                    event.preventDefault();
+
+                    const metodo = document.getElementById("metodoPago").value;
+                    const cambio = document.getElementById("cambio").value;
+
+                    if (!metodo) {
+                        alert("Seleccione un método de pago");
+                        return;
+                    }
+
+                    if (cambio === "") {
+                        alert("Ingrese el monto pagado");
+                        return;
+                    }
+
+                    if (cambio === "Monto insuficiente") {
+                        alert("El monto pagado es insuficiente");
+                        return;
+                    }
+
+                    alert("Venta realizada");
+                    window.location.href = "/realizar_venta";
+                }
+
+                // Cargar productos al abrir el modal
+                document.addEventListener('DOMContentLoaded', () => {
+                    const modalVenta = document.getElementById('modalVenta');
+                    if (modalVenta) {
+                        modalVenta.addEventListener('show.bs.modal', cargarVenta);
+                    }
+                });
+
+
+            </script>
+
+
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                crossorigin="anonymous"></script>
+</body>
+
+</html>

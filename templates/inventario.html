@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Inventario</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        /* Fondo con imagen */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("static/Dark Green and White Modern Minimalist Nature Presentation.jpg") center/cover no-repeat;
+            z-index: -1;
+        }
+
+        body {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Gris */
+        .Inventario-container {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            /* por esto no quedaba era 100 */
+            width: 170%;
+            max-width: 1100px;
+            padding: 10px 30px;
+            margin-top: 25px;
+            margin-bottom: 25px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: left;
+            /* para moverlo */
+            margin-left: -60%;
+        }
+
+        .Inventario-container h1 {
+            color: white;
+            font-size: 40px;
+            font-family: "DM Serif Display", serif;
+            margin-bottom: 20px;
+        }
+
+        thead {
+            background-color: gray;
+            color: white;
+        }
+
+        /* verde */
+        .Botones-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 100px;
+            background-color: rgba(141, 170, 0, 0.85);
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding: 15px 0;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+
+        .Botones-container:hover {
+            width: 300px;
+            transition: width 0.3s;
+        }
+
+        .Botones-container:hover .Botones {
+            width: 250px;
+            border-radius: 0%;
+            transition: border-radius 0.5s;
+        }
+
+        .Botones-container:hover .Botones img {
+            position: fixed;
+            margin-right: 150px;
+            transition: margin-right 0.5s;
+        }
+
+        .Botones-container:hover .Botones_texto {
+            position: relative;
+            visibility: visible;
+            opacity: 1;
+            transition: opacity 0.3s;
+        }
+
+        .Botones {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.65);
+            display: flex;
+            flex-direction: center;
+            justify-content: center;
+            align-items: center;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            text-decoration: none;
+            gap: 10px;
+
+        }
+
+        .Botones img {
+            width: 45px;
+            height: 45px;
+
+        }
+
+        .Botones:hover img {
+            width: 55px;
+            height: 55px;
+            display: flex;
+            flex-direction: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .Botones_texto {
+            background-color: rgba(0, 0, 0, 0);
+            color: black;
+            border-radius: 10px;
+            visibility: hidden;
+            text-align: center;
+            padding: 5px;
+            position: fixed;
+            margin-left: 20%;
+            z-index: 1;
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        /* Contenedor del formulario */
+        .Formulario-container {
+            background-color: rgba(141, 170, 0, 0.85);
+            padding: 20px;
+            margin-top: 25px;
+            width: 80%;
+            border-radius: 15px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-right: -15px;
+            margin-left: calc(auto + 35px);
+
+            float: right;
+        }
+
+        .Formulario-container h2 {
+            color: white;
+            font-size: 40px;
+            font-family: "DM Serif Display", serif;
+            text-align: center;
+        }
+
+        .main-panel {
+            margin-left: 120px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 12px;
+            max-width: 1100px;
+            margin-top: 25px;
+        }
+    </style>
+</head>
+
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <ul class="flashed-messages">
+        {% for category, message in messages %}
+        <div class="alert bg-{{ category }} mt-md-3 text-center">
+            <li>{{ message }}</li>
+        </div>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <div class="container mt-4">
+        <!-- contiene botones, inventario y formulario -->
+        <div class="row g-4">
+
+            <!-- Botones verde -->
+            <div class="col-md-3">
+                <div class="Botones-container">
+                    <a href="{{ url_for('principal') }}" class="Botones">
+                        <img src="{{ url_for('static', filename='Principal.png') }}" alt="Ventas">
+                        <div class="Botones_texto">Menú principal</div>
+                    </a>
+                    {% if current_user.rol == 'ADMIN' or session['acceso_ventas'] == 'S' %}
+                    <a href="{{ url_for('ventas') }}" class="Botones">
+                        <img src="{{ url_for('static', filename='venta.png') }}" alt="Ventas">
+                        <div class="Botones_texto">Ventas</div>
+                    </a>
+                    {% endif %}
+                    {% if current_user.rol == 'ADMIN' or session['acceso_caja'] == 'S' %}
+                    <a href="/caja" class="Botones">
+                        <img src="{{ url_for('static', filename='caja.png') }}" alt="Caja">
+                        <div class="Botones_texto">Caja</div>
+                    </a>
+                    {% endif %}
+                    {% if current_user.rol == 'ADMIN' or session['acceso_inventario'] == 'S' %}
+                    <a href="/inventario" class="Botones">
+                        <img src="{{ url_for('static', filename='inventario.png') }}" alt="Inventario">
+                        <div class="Botones_texto">Inventario</div>
+                    </a>
+                    {% endif %}
+                    <a href="/logout" class="Botones" img>
+                        <img src="{{ url_for('static', filename='logout.png') }}" alt="Logout">
+                        <div class="Botones_texto">Cerrar sesión</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Inventario -->
+            <div class="col-md-5">
+                <div class="Inventario-container">
+                    <h1>Frutería "El Divino Niño"</h1>
+                    <form action="/Buscar_Producto" method="post">
+                        <div class="input-group mb-3">
+                            <input type="text" name="busqueda" class="form-control" placeholder="Buscar por nombre o codigo."
+                                aria-label="Buscar producto" aria-describedby="button-search">
+                            <button class="btn btn-outline-light" type="submit" id="button-search">Buscar</button>
+                        </div>
+                    </form>
+                    <form action="/actualizar_inventario" method="POST">
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th style="border:1px solid black;">Código</th>
+                                    <th style="border:1px solid black;">Nombre</th>
+                                    <th style="border:1px solid black;">Precio</th>
+                                    <th style="border:1px solid black;">Cantidad</th>
+                                    <th style="border:1px solid black;">Categoría</th>
+                                    <th style="border:1px solid black;">T_Emboltura</th>
+                                    <th style="border:1px solid black;">Merma</th>
+                                    {% if current_user.rol == 'ADMIN' %}
+                                    <th style="border:1px solid black;">Acción</th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for producto in productos %}
+                                <tr>
+                                    <td style="border:1px solid black;">{{ producto[0] }}</td>
+                                    <td style="border:1px solid black;">{{ producto[1] }}</td>
+
+                                    <td style="border:1px solid black;">{{ producto[2] }}</td>
+                                    <td style="border:1px solid black;">{{ producto[3] }}</td>
+                                    <!-- p.Codigo, p.Nombre, p.Precio, p.Cantidad, f.Fecha, h.Hora, c.CATEGORIA, m.Cantidad AS Merma -->
+                                    <td style="border:1px solid black;">{{ producto[4] }}</td>
+                                    <td style="border:1px solid black;">{{ producto[5] }}</td>
+                                    <td style="border:1px solid black;">{{ producto[6] }}</td>
+                                    {% if current_user.rol == 'ADMIN' %}
+                                    <td style="border:1px solid black;">
+                                        <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#modalActualizar{{ producto[0] }}">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="16"
+                                                fill="currentColor" class="bi bi-pen" viewBox="0 0 16 16">
+                                                <path
+                                                    d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-.059 2.059L4.854 14.854a.5.5 0 0 1-.233.131l-4 1a.5.5 0 0 1-.606-.606l1-4a.5.5 0 0 1 .131-.232l9.642-9.642a.5.5 0 0 0-.642.056L6.854 4.854a.5.5 0 1 1-.708-.708L9.44.854A1.5 1.5 0 0 1 11.5.796a1.5 1.5 0 0 1 1.998-.001m-.644.766a.5.5 0 0 0-.707 0L1.95 11.756l-.764 3.057 3.057-.764L14.44 3.854a.5.5 0 0 0 0-.708z" />
+                                            </svg>
+                                        </button>
+                                        <div class="modal fade" id="modalActualizar{{ producto[0] }}" tabindex="-1"
+                                            aria-labelledby="modalActualizarLabel{{ producto[0] }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <img src="{{ url_for('static', filename='inventario.png') }}"
+                                                            alt="Inventario" width="40" height="40"
+                                                            style="margin-right: 10px;">
+                                                        <h5 class="modal-title"
+                                                            id="modalActualizarLabel{{ producto[0] }}"
+                                                            style="color: black;">Actualizar Producto</h5>
+                                                        <button type="button" class="btn-close"
+                                                            data-bs-dismiss="modal"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <form action="/actualizar_inventario" method="POST"
+                                                            class="formActualizar">
+                                                            <label class="form-label"
+                                                                style="color: black;">Código</label>
+                                                            <input class="form-control" type="text" name="codigo"
+                                                                id="codigo" value="{{ producto[0] }}" readonly>
+                                                            <label for="nombre" style="color: black;">Nombre</label>
+                                                            <input type="text" id="nombre" name="nombre"
+                                                                class="form-control" maxlength="10" pattern="[a-zA-Z ]+"
+                                                                value="{{ producto[1] }}" required>
+                                                            <label for="precio" style="color: black;">Precio</label>
+                                                            <input type="number" step="0.01" id="precio" name="precio"
+                                                                class="form-control" min="1" max="500"
+                                                                value="{{ producto[2] }}" required>
+
+                                                            <!-- Cantidad + Unidad -->
+                                                            <div class="mb-3">
+                                                                <label class="form-label"
+                                                                    style="color: black;">Cantidad</label>
+                                                                <div class="input-group">
+                                                                    <input type="number" class="inputCantidad form-control" name="cantidad"
+                                                                        placeholder="Ej. 2"
+                                                                        step="0.01" max="50" value="{{ producto[3] }}"
+                                                                        required>
+                                                                    <select name="unidad"
+                                                                        class="inputUnidad form-select"
+                                                                        style="max-width: 120px;">
+                                                                        <option value="Kilo" {% if producto[5]=='Kilo'
+                                                                            %}selected{% endif %}>Kilo</option>
+                                                                        <option value="Pieza" {% if producto[5]=='Pieza'
+                                                                            %}selected{% endif %}>Pieza</option>
+                                                                        <option value="Bolsa" {% if producto[5]=='Bolsa'
+                                                                            %}selected{% endif %}>Bolsa</option>
+                                                                    </select>
+                                                                </div>
+                                                            </div>
+
+                                                            <label for="merma" style="color: black;">Merma</label>
+                                                            <input type="number" step="0.01" class="inputMerma form-control" name="merma"
+                                                                    min="0" max="50"
+                                                                value="{{ producto[6] }}" required>
+
+                                                            <!-- Categoría -->
+                                                            <div class="mb-3">
+                                                                <label class="form-label"
+                                                                    style="color: black;">Categoría</label>
+                                                                <select name="categoria" class="form-select"
+                                                                    value="{{ producto[4] }}" required>
+                                                                    <option value="1">Fruta</option>
+                                                                    <option value="2">Verdura</option>
+                                                                    <option value="3">Condimentos</option>
+                                                                    <option value="4">Abarrotes</option>
+                                                                    <option value="5">Dulces</option>
+                                                                    <option value="6">Omnilife</option>
+                                                                    <option value="7">Carnes</option>
+                                                                </select>
+                                                            </div>
+                                                            <button type="submit" class="btn btn-primary">Guardar
+                                                                Cambios</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" formaction="/eliminar_producto" name="codigo_eliminar"
+                                            value="{{ producto[0] }}" class="btn btn-danger btn-sm"
+                                            onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="16"
+                                                fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                                <path
+                                                    d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z" />
+                                                <path
+                                                    d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                            {% endfor %}
+                            
+                            </tbody>
+                        </table>
+                    </form>
+
+                </div>
+            </div>
+
+            <!-- Formulario -->
+            <div class="col-md-4">
+                <div class="Formulario-container">
+                    <h2>Agregar</h2>
+                    <form id="formProducto" action="/agregar_producto_inventario" method="POST">
+
+                        <label for="nombre">Nombre</label>
+                        <input type="text" id="Pnombre" name="Pnombre" class="form-control" maxlength="10"
+                            pattern="[a-zA-Z ]+" required>
+                        <label for="precio">Precio</label>
+                        <input type="number" step="0.50" id="Pprecio" name="Pprecio" class="form-control" min="1"
+                            max="500" required>
+
+                        <!-- Cantidad + Unidad -->
+                        <div class="mb-3">
+                            <label class="form-label">Cantidad</label>
+                            <div class="input-group">
+                                <input type="number" name="Pcantidad" id="Pcantidad" class="form-control"
+                                    placeholder="Ej. 2" min="1" max="50" step="0.01" required>
+
+                                <select name="Punidad" id="Punidad" class="form-select" style="max-width: 120px;">
+                                    <option value="Kilo">Kilo</option>
+                                    <option value="Pieza">Pieza</option>
+                                    <option value="Bolsa">Bolsa</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <label for="merma">Merma</label>
+                        <input type="number" step="0.01" id="Pmerma" name="Pmerma" class="form-control" min="0" max="50"
+                            required>
+
+                        <!-- Categoría -->
+                        <div class="mb-3">
+                            <label class="form-label">Categoría</label>
+                            <select name="Pcategoria" id="Pcategoria" class="form-select" required>
+                                <option value="1">Fruta</option>
+                                <option value="2">Verdura</option>
+                                <option value="3">Condimentos</option>
+                                <option value="4">Abarrotes</option>
+                                <option value="5">Dulces</option>
+                                <option value="6">Omnilife</option>
+                                <option value="7">Carnes</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Guardar</button>
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+        document.getElementById('formProducto').addEventListener('submit', function (e) {
+            const cantidad = parseFloat(document.getElementById('Pcantidad').value);
+            const merma = parseFloat(document.getElementById('Pmerma').value);
+            const unidad = document.getElementById('Punidad').value;
+
+            const Decimal = (num) => !Number.isInteger(num);
+
+            if (merma >= cantidad) {
+                e.preventDefault();
+                alert('La merma debe ser menor que la cantidad total.');
+                return;
+            }
+
+            if (unidad === 'Kilo' && cantidad <= 0) {
+                e.preventDefault();
+                alert('La cantidad en kilos debe ser un número positivo.');
+                return;
+            }
+
+            if (unidad !== 'Kilo' && Decimal(cantidad)) {
+                e.preventDefault();
+                alert('La cantidad en piezas o bolsas debe ser un número entero.');
+                return;
+            }
+
+            if (unidad !== 'Kilo' && Decimal(merma)) {
+                e.preventDefault();
+                alert('La merma en piezas o bolsas debe ser un número entero.');
+                return;
+            }
+        });
+
+        document.querySelectorAll('.formActualizar').forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                const cantidad = parseFloat(form.querySelector('.inputCantidad').value);
+                const merma = parseFloat(form.querySelector('.inputMerma').value);
+                const unidad = form.querySelector('.inputUnidad').value;
+
+                const Decimal = (num) => !Number.isInteger(num);
+
+                if (merma >= cantidad) {
+                    e.preventDefault();
+                    alert('La merma debe ser menor que la cantidad total.');
+                    return;
+                }
+                if (unidad === 'Kilo' && cantidad <= 0) {
+                    e.preventDefault();
+                    alert('La cantidad en kilos debe ser un número positivo.');
+                    return;
+                }
+                if (unidad !== 'Kilo' && Decimal(cantidad)) {
+                    e.preventDefault();
+                    alert('La cantidad en piezas o bolsas debe ser un número entero.');
+                    return;
+                }
+                if (unidad !== 'Kilo' && Decimal(merma)) {
+                    e.preventDefault();
+                    alert('La merma en piezas o bolsas debe ser un número entero.');
+                    return;
+                }
+            });
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" 
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

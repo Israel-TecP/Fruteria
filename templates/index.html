@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <title>Login Frutería</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body,
+        html {
+            height: 100%;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        /* Fondo con mayor color */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("static/Dark Green and White Modern Minimalist Nature Presentation.jpg") center/cover no-repeat;
+            z-index: -1;
+        }
+
+        body {
+            background-color: rgba(255, 255, 255, 0.1);
+            /* ligera encima para transparencia */
+        }
+
+        /* Contenedor principal */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            gap: 20px;
+        }
+
+        /* Verde */
+        .welcome-box {
+            background-color: rgba(141, 170, 0, 0.85);
+            color: black;
+            width: 600px;
+            height: 400px;
+            padding: 50px;
+            border-radius: 15px;
+            text-align: center;
+            font-style: italic;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Solo para el texto de bienvenidos */
+        .welcome-box p {
+            font-family: "Brush Script MT", cursive;
+            font-size: 100px;
+            margin: 0;
+            color: rgb(0, 0, 0);
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Imagen de Verde */
+        .welcome-box img {
+            width: auto;
+            height: 180px;
+            object-fit: contain;
+        }
+
+        /* Gris */
+        .login-box {
+            background-color: rgba(88, 83, 89, 0.85);
+            color: white;
+            width: 600px;
+            height: 400px;
+            padding: 30px 50px;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Iniciar sesión */
+        .login-box h2 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 50px;
+            font-weight: Serif;
+        }
+
+        /* Campos de usuario y contraseña */
+        input[type="text"],
+        input[type="password"] {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        input[name="username"] {
+            margin-bottom: 40px;
+        }
+
+        input[name="password"] {
+            margin-bottom: 20px;
+        }
+
+
+        /*Para la flecha de ingresar al menú*/
+        .arrow-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #8daa00;
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: auto;
+            align-self: center;
+        }
+
+        .arrow-btn:hover {
+            background-color: #7a9500;
+        }
+
+
+        /* Error */
+        p.error {
+            color: red;
+            font-size: 0.9em;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul class="flashed-messages">
+                    {% for category, message in messages %}
+                    <div class="alert bg-danger mt-4 text-center">
+                        <li class="{{ category }}">{{ message }}</li>
+                    </div>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    <div class="login-container">
+        <!-- Cuadro verde -->
+        <div class="welcome-box">
+            <p>Bienvenidos!</p>
+            <img src="{{ url_for('static', filename='v.png') }}" alt="Cesta de frutas">
+        </div>
+
+        <div class="login-box">
+            <h2>Iniciar sesión</h2>
+
+            {% if error %}
+            <p class="error">{{ error }}</p>
+            {% endif %}
+
+            <!-- Formulario que valida usuario -->
+            <form action="{{ url_for('login') }}" method="POST"
+                style="display: flex; flex-direction: column; height: 100%;">
+                <input type="text" name="username" placeholder="Usuario" required>
+                <input type="password" name="password" placeholder="Contraseña" required>
+                <button type="submit" class="arrow-btn">&#8594;</button>
+
+            </form>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+                integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+                crossorigin="anonymous"></script>
+</body>
+
+</html>
