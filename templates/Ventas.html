@@ -123,7 +123,7 @@
             transition: transform 0.2s, background-color 0.2s;
             text-decoration: none;
             gap: 10px;
-            
+
         }
 
         .Botones img {
@@ -434,13 +434,14 @@
                             Realizar venta
                         </button>
 
-                        <div class="modal fade" id="modalVenta" tabindex="-1" aria-labelledby="modalVentaLabel" aria-hidden="true">
+                        <div class="modal fade" id="modalVenta" tabindex="-1" aria-labelledby="modalVentaLabel"
+                            aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
 
                                     <div class="modal-header">
-                                        <img src="{{ url_for('static', filename='venta.png') }}" alt="Ventas" width="40" height="40"
-                                            style="margin-right: 10px;">
+                                        <img src="{{ url_for('static', filename='venta.png') }}" alt="Ventas" width="40"
+                                            height="40" style="margin-right: 10px;">
                                         <h5 class="modal-title" id="modalVentaLabel" style="color: black;">Confirmar
                                             venta</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -504,8 +505,8 @@
                                     </div>
 
                                     <div class="modal-footer">
-                                        <button class="btn btn-primary" onclick="confirmarVenta(event)"><a
-                                                href="/realizar_venta" style="color: white; text-decoration: none;">Confirmar venta</button>
+                                        <button class="btn btn-primary" style="color: white; text-decoration: none;"
+                                            onclick="confirmarVenta(event)">Confirmar venta</button>
                                         <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                                     </div>
 
@@ -540,7 +541,7 @@
                             <button type="submit" class="btn btn-primary">Buscar</button>
                         </form>
 
-                        <form action="/agregar_producto" method="POST">
+                        <form id="formAgregarProducto" action="/agregar_producto" method="POST">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="modalProductosLabel">Lista de productos</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -568,7 +569,8 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary">Agregar al carrito</button>
+                                <button type="button" class="btn btn-primary" onclick="agregarAlCarrito()">Agregar al
+                                    carrito</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                             </div>
                         </form>
@@ -616,9 +618,21 @@
                     }
                 }
 
+                const productosMarcados = new Set();
+                const cantidadesMarcadas = {};
 
                 async function BuscarProductos() {
                     try {
+                        document.querySelectorAll('#tablaProductosBody input[type="checkbox"]').forEach(cb => {
+                            if (cb.checked) {
+                                productosMarcados.add(String(cb.value));
+                            }
+                        });
+                        document.querySelectorAll('#tablaProductosBody input[type="number"]').forEach(input => {
+                            const codigo = input.name.replace('cantidad_', '');
+                            cantidadesMarcadas[codigo] = input.value;
+                        });
+
                         const filtro = document.getElementById('filtroProductos').value;
                         const respuesta = await fetch(`/Buscar_Productos?filtro=${encodeURIComponent(filtro)}`);
                         const productos = await respuesta.json();
@@ -628,34 +642,69 @@
 
                         productos.forEach(p => {
                             const bloqueado = p.en_uso === 'S';
-                            const fila = `
-    <tr ${bloqueado ? 'class="table-danger"' : ''}>
-      <td>
-        ${bloqueado
+                            const estabaMarcado = productosMarcadoss.has(String(p.codigo));
+                            const cantidadPrevia = cantidadesMarcadass[String(p.codigo)] || 1;
+
+                            tbody.innerHTML += `
+            <tr ${bloqueado ? 'class="table-danger"' : ''}>
+              <td>
+                ${bloqueado
                                     ? '<button disabled class="btn btn-secondary">Bloqueado</button>'
-                                    : `<input type="checkbox" name="productos_seleccionados" value="${p.codigo}">`}
-      </td>
-      <td>${p.nombre}</td>
-      <td>${p.categoria}</td>
-      <td>${p.precio}</td>
-      <td>${p.cantidad}</td>
-      <td>${p.codigo}</td>
-      <td>${p.t_unidad}</td>
-      <td>
-        <input type="number" name="cantidad_${p.codigo}" value="1" min="1" max="${p.cantidad}" required ${bloqueado ? 'disabled' : ''}>
-      </td>
-    </tr>
-  `;
-                            tbody.innerHTML += fila;
+                                    : `<div class="checkbox-wrapper-19">
+                        <input type="checkbox" id="cbtest-${p.codigo}" name="productos_seleccionados" value="${p.codigo}" ${estabaMarcado ? 'checked' : ''}>
+                        <label for="cbtest-${p.codigo}" class="check-box"></label>
+                       </div>`}
+              </td>
+              <td>${p.nombre}</td>
+              <td>${p.categoria}</td>
+              <td>${p.precio}</td>
+              <td>${p.cantidad}</td>
+              <td>${p.codigo}</td>
+              <td>${p.t_unidad}</td>
+              <td>
+                <input type="number" name="cantidad_${p.codigo}" value="${cantidadPrevia}" min="1" max="${p.cantidad}" required ${bloqueado ? 'disabled' : ''}>
+              </td>
+            </tr>`;
                         });
+
                     } catch (error) {
-                        console.error('Error cargando productos:', error);
+                        console.error('Error buscando productos:', error);
                     }
                 }
 
-                document.addEventListener('DOMContentLoaded', cargarProductos);
-                const modalProductos = document.getElementById('modalProductos');
-                modalProductos.addEventListener('show.bs.modal', cargarProductos);
+                const productosMarcadoss = new Set();
+                const cantidadesMarcadass = {};
+
+                document.addEventListener('DOMContentLoaded', () => {
+
+                    // ── Modal Productos ──
+                    const modalProductos = document.getElementById('modalProductos');
+
+                    modalProductos.addEventListener('show.bs.modal', () => {
+                        cargarProductos().then(() => {
+                            productosMarcadoss.forEach(codigo => {
+                                const cb = document.getElementById(`cbtest-${codigo}`);
+                                if (cb) cb.checked = true;
+                            });
+                            Object.entries(cantidadesMarcadass).forEach(([codigo, cantidad]) => {
+                                const input = document.querySelector(`input[name="cantidad_${codigo}"]`);
+                                if (input) input.value = cantidad;
+                            });
+                        });
+                    });
+
+                    modalProductos.addEventListener('hidden.bs.modal', () => {
+                        productosMarcadoss.clear();
+                        Object.keys(cantidadesMarcadass).forEach(k => delete cantidadesMarcadass[k]);
+                    });
+
+                    // ── Modal Venta ──
+                    const modalVenta = document.getElementById('modalVenta');
+                    if (modalVenta) {
+                        modalVenta.addEventListener('show.bs.modal', cargarVenta);
+                    }
+
+                });
 
                 function cargarVenta() {
                     const tablaBody = document.getElementById("tablaVentaBody");
@@ -687,6 +736,7 @@
 
                 function confirmarVenta(event) {
                     event.preventDefault();
+                    event.stopPropagation();
 
                     const metodo = document.getElementById("metodoPago").value;
                     const cambio = document.getElementById("cambio").value;
@@ -695,12 +745,10 @@
                         alert("Seleccione un método de pago");
                         return;
                     }
-
                     if (cambio === "") {
                         alert("Ingrese el monto pagado");
                         return;
                     }
-
                     if (cambio === "Monto insuficiente") {
                         alert("El monto pagado es insuficiente");
                         return;
@@ -710,14 +758,47 @@
                     window.location.href = "/realizar_venta";
                 }
 
-                // Cargar productos al abrir el modal
-                document.addEventListener('DOMContentLoaded', () => {
-                    const modalVenta = document.getElementById('modalVenta');
-                    if (modalVenta) {
-                        modalVenta.addEventListener('show.bs.modal', cargarVenta);
-                    }
-                });
+                function agregarAlCarrito() {
+                    // 1. Guardar el estado visible ANTES de enviar
+                    document.querySelectorAll('#tablaProductosBody input[type="checkbox"]').forEach(cb => {
+                        if (cb.checked) productosMarcados.add(String(cb.value));
+                        else productosMarcados.delete(String(cb.value)); // por si lo desmarcaron
+                    });
+                    document.querySelectorAll('#tablaProductosBody input[type="number"]').forEach(input => {
+                        const codigo = input.name.replace('cantidad_', '');
+                        cantidadesMarcadas[codigo] = input.value;
+                    });
 
+                    if (productosMarcados.size === 0) {
+                        alert('Selecciona al menos un producto');
+                        return;
+                    }
+
+                    const form = document.getElementById('formAgregarProducto');
+
+                    // 2. Limpiar inputs hidden anteriores
+                    form.querySelectorAll('.input-hidden-dinamico').forEach(el => el.remove());
+
+                    // 3. Generar un input hidden por cada producto marcado
+                    productosMarcados.forEach(codigo => {
+                        const inputCodigo = document.createElement('input');
+                        inputCodigo.type = 'hidden';
+                        inputCodigo.name = 'productos_seleccionados';
+                        inputCodigo.value = codigo;
+                        inputCodigo.className = 'input-hidden-dinamico';
+                        form.appendChild(inputCodigo);
+
+                        const inputCantidad = document.createElement('input');
+                        inputCantidad.type = 'hidden';
+                        inputCantidad.name = `cantidad_${codigo}`;
+                        inputCantidad.value = cantidadesMarcadas[codigo] || 1;
+                        inputCantidad.className = 'input-hidden-dinamico';
+                        form.appendChild(inputCantidad);
+                    });
+
+                    // 4. Enviar el form
+                    form.submit();
+                }
 
             </script>
 
